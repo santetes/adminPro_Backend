@@ -5,7 +5,7 @@ const generarJWT = (uid) => {
         jwt.sign(
             { uid },
             process.env.JWT_SECRET,
-            { expiresIn: '24h' },
+            { expiresIn: '10 days' },
             (err, token) => {
                 if (err) {
                     reject('ocurrió algún error en la generación del jwt')
