@@ -15,6 +15,9 @@ dbConexion()
 // Configurar Cors
 app.use(cors())
 
+// Carpeta Pública
+app.use(express.static('public'))
+
 // Lectura y parseo del body
 app.use(express.json())
 

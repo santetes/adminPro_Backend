@@ -2,6 +2,7 @@ const { request, response } = require('express')
 const bcrypt = require('bcryptjs')
 const Usuario = require('../models/usuario.model')
 const { generarJWT } = require('../helpers/jwt.helpers')
+const { googleVerify } = require('../helpers/google-verify.helpers')
 
 const login = async (req = request, res = response) => {
     const { email, password } = req.body
@@ -36,4 +37,36 @@ const login = async (req = request, res = response) => {
     }
 }
 
-module.exports = { login }
+const googleSignIn = async (req = request, res = response) => {
+    try {
+        const { email, name, picture } = await googleVerify(req.body.token)
+
+        const usuarioDb = await Usuario.findOne({ email })
+        let usuario
+
+        if (!usuarioDb) {
+            usuario = new Usuario({
+                nombre: name,
+                email,
+                password: '**',
+                img: picture,
+                google: true,
+            })
+        } else {
+            usuario = usuarioDb
+            usuario.google = true
+        }
+
+        // Guardar Usuario
+        await usuario.save()
+
+        // Generar JWT
+        const token = await generarJWT(usuario._id)
+
+        return res.status(200).json({ token })
+    } catch (error) {
+        res.status(500).json({ msg: 'algo salió mal' })
+    }
+}
+
+module.exports = { login, googleSignIn }
