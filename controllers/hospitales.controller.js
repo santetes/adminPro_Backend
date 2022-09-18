@@ -21,11 +21,41 @@ const crearHospital = async (req = request, res = response) => {
         return res.status(500).json({ msg: 'algo salió mal' })
     }
 }
-const actualizarHospital = (req = request, res = response) => {
-    res.status(200).json({ msg: 'actualizar ok' })
+const actualizarHospital = async (req = request, res = response) => {
+    const hospital = await Hospital.findById(req.params.id)
+
+    try {
+        if (!hospital) {
+            return res.status(400).json({
+                msg: 'No existe ningún hospital con ese identificador',
+            })
+        }
+
+        hospital.nombre = req.body.nombre ?? hospital.nombre
+        hospital.usuario = req.uid
+
+        console.log(hospital)
+
+        await hospital.save()
+
+        res.status(200).json({ msg: 'actualizar ok', hospital })
+    } catch (error) {
+        console.log('algo salió mal :(')
+    }
 }
-const borrarHospital = (req = request, res = response) => {
-    res.status(200).json({ msg: 'borrar ok' })
+const borrarHospital = async (req = request, res = response) => {
+    try {
+        const hospital = await Hospital.findByIdAndDelete(req.params.id)
+        if (!hospital) {
+            return res
+                .status(404)
+                .json({ msg: 'no se ha encontrado ningún hospital con ese Id' })
+        } else {
+            return res.status(200).json({ msg: 'Borrado!!!' })
+        }
+    } catch (error) {
+        console.log('algo salió mal :(')
+    }
 }
 
 module.exports = {
