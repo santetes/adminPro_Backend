@@ -70,7 +70,12 @@ const actualizaUsuario = async (req = request, res = response) => {
         if (emailRepetido && usuarioDb.email != campos.email) {
             return res
                 .status(404)
-                .json({ msg: 'ya exsiste en la bbdd un usuario con ese email' })
+                .json({ msg: 'ya existe en la bbdd un usuario con ese email' })
+        }
+
+        // Comprobamos si el usuario google y protegemos que no pueda modificar su email
+        if (usuarioDb.google) {
+            campos.email = usuarioDb.email
         }
 
         const usuarioActualizado = await Usuario.findByIdAndUpdate(

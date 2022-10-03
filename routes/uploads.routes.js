@@ -10,6 +10,6 @@ const { validarJWT } = require('../middlewares/validar-JWT')
 const router = Router()
 
 router.put('/:coleccion/:id', validarJWT, fileUpload)
-router.get('/:coleccion/:imagen', validarJWT, retornaImagen)
+router.get('/:coleccion/:imagen', retornaImagen)
 
 module.exports = router

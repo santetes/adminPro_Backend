@@ -57,7 +57,7 @@ const fileUpload = async (req = request, res = response) => {
                 return res.status(500).json({ msg: 'error al mover la imagen' })
             }
 
-            res.json({ msg: 'Archivo subido', nombreArchivo })
+            res.json({ ok: true, nombreArchivo })
         })
     } else {
         return res.status(400).json({
